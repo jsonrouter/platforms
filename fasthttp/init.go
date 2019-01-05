@@ -1,15 +1,14 @@
 package router
 
 import	(
-		"strings"
-		"strconv"
-		//
-		"github.com/valyala/fasthttp"
-		"github.com/golangdaddy/tarantula/log"
-		//
-		"github.com/golangdaddy/tarantula/router/common"
-		"github.com/golangdaddy/tarantula/router/common/openapi"
-		)
+	"strconv"
+	//
+	"github.com/valyala/fasthttp"
+	//
+	"github.com/jsonrouter/logging"
+	"github.com/jsonrouter/core"
+	"github.com/jsonrouter/core/tree"
+)
 
 type FastHttpRouter func (ctx *fasthttp.RequestCtx)
 
@@ -23,9 +22,9 @@ func (router FastHttpRouter) ServeTLS(port int, crt, key string) error {
 	return fasthttp.ListenAndServeTLS(":"+strconv.Itoa(port), crt, key, fasthttp.RequestHandler(router))
 }
 
-func NewRouter(logger logging.Logger, spec *openapi.APISpec) (*common.Node, FastHttpRouter) {
+func NewRouter(logger logging.Logger, spec interface{}) (*tree.Node, FastHttpRouter) {
 
-	root := common.Root()
+	root := tree.NewNode()
 
 	root.Config.Spec = spec
 	root.Config.Log = logger
@@ -33,23 +32,11 @@ func NewRouter(logger logging.Logger, spec *openapi.APISpec) (*common.Node, Fast
 	return root, FastHttpRouter(
 		func (ctx *fasthttp.RequestCtx) {
 
-			fullPath := string(ctx.Path())
-
-			node := common.Root()
-			req := NewRequestObject(node, ctx)
-
-			// check for subdomain routing
-
-			subdomain := strings.Split(string(ctx.Host()), ".")[0]
-
-			subNode := node.Config.SubdomainTrees[subdomain]
-			if subNode != nil {
-
-				subNode.MainHandler(req, fullPath)
-				return
-			}
-
-			node.MainHandler(req, fullPath)
+			core.MainHandler(
+				NewRequestObject(root, ctx),
+				root,
+				string(ctx.Path()),
+			)
 
 		},
 	)

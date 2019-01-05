@@ -2,23 +2,25 @@ package router
 
 import 	(
 		"io"
-		"net/http"
+		www "net/http"
 		"encoding/json"
 		//
 		"github.com/valyala/fasthttp"
 		"github.com/golangdaddy/go.uuid"
 		//"github.com/hjmodha/goDevice"
 		//
-		"github.com/golangdaddy/tarantula/log"
-		"github.com/golangdaddy/tarantula/router/common"
+		"github.com/jsonrouter/logging"
+		"github.com/jsonrouter/validation"
 		"github.com/jsonrouter/core/http"
+		"github.com/jsonrouter/core/tree"
+		"github.com/jsonrouter/core/config"
 		)
 
 type Request struct {
 	ctx *fasthttp.RequestCtx
-	config *common.Config
+	config *config.Config
 	path string
-	Node *common.Node
+	Node *tree.Node
 	method string
 	params map[string]interface{}
 	bodyParams map[string]interface{}
@@ -26,17 +28,17 @@ type Request struct {
 	Array []interface{}
 }
 
-func NewRequestObject(node *common.Node, ctx *fasthttp.RequestCtx) *Request {
+func NewRequestObject(node *tree.Node, ctx *fasthttp.RequestCtx) *Request {
 
 	return &Request{
 		ctx:			ctx,
 		config:			node.Config,
 		Node:			node,
 		method:			string(ctx.Method()),
-		params:			node.RequestParams(),
+		params:			node.RequestParameters(),
 		bodyParams:		map[string]interface{}{},
-		Object:			common.Object{},
-		Array:			common.Array{},
+		Object:			validation.Object{},
+		Array:			validation.Array{},
 	}
 }
 
@@ -55,14 +57,14 @@ func (req *Request) Log() logging.Logger {
 	return req.config.Log
 }
 
-func (req *Request) Config() *common.Config {
+func (req *Request) Config() *config.Config {
 
 	return req.config
 }
 
-func (req *Request) Res() http.ResponseWriter {
+func (req *Request) Res() www.ResponseWriter {
 
-	x := new(http.ResponseWriter)
+	x := new(www.ResponseWriter)
 
 	return *x
 }
@@ -153,33 +155,33 @@ func (req *Request) RawBody() (*http.Status, []byte) {
 
 	b := req.ctx.PostBody()
 
-	if b == nil { return web.Respond(400, "BODY IS NIL"), nil }
+	if b == nil { return http.Respond(400, "BODY IS NIL"), nil }
 
 	return nil, b
 }
 
 func (req *Request) ReadBodyObject() *http.Status {
 
-	err := json.Unmarshal(req.ctx.PostBody(), &req.Object); if err != nil { return web.Respond(400, err.Error()) }
+	err := json.Unmarshal(req.ctx.PostBody(), &req.Object); if err != nil { return http.Respond(400, err.Error()) }
 
 	return nil
 }
 
 func (req *Request) ReadBodyArray() *http.Status {
 
-	err := json.Unmarshal(req.ctx.PostBody(), &req.Array); if err != nil { return web.Respond(400, err.Error()) }
+	err := json.Unmarshal(req.ctx.PostBody(), &req.Array); if err != nil { return http.Respond(400, err.Error()) }
 
 	return nil
 }
 
 func (req *Request) Fail() *http.Status {
 
-	return web.Fail()
+	return http.Fail()
 }
 
 func (req *Request) Respond(args ...interface{}) *http.Status {
 
-	return web.Respond(args...)
+	return http.Respond(args...)
 }
 
 func (req *Request) Redirect(path string, code int) *http.Status {

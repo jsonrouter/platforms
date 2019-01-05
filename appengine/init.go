@@ -2,51 +2,38 @@ package router
 
 import	(
 		"regexp"
-		"strings"
-		"net/http"
+		www "net/http"
 		//
-		"github.com/golangdaddy/tarantula/router/common"
-		"github.com/golangdaddy/tarantula/router/common/openapi"
+		"github.com/jsonrouter/core"
+		"github.com/jsonrouter/core/tree"
 		)
 
 type WildcardRouter struct {
-	handler http.Handler
+	handler www.Handler
 }
 
-func (router *WildcardRouter) Handler(pattern *regexp.Regexp, handler http.Handler) {}
+func (router *WildcardRouter) Handler(pattern *regexp.Regexp, handler www.Handler) {}
 
-func (router *WildcardRouter) HandleFunc(pattern *regexp.Regexp, handler func(http.ResponseWriter, *http.Request)) {}
+func (router *WildcardRouter) HandleFunc(pattern *regexp.Regexp, handler func(www.ResponseWriter, *www.Request)) {}
 
-func (router *WildcardRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) { router.handler.ServeHTTP(w, r) }
+func (router *WildcardRouter) ServeHTTP(w www.ResponseWriter, r *www.Request) { router.handler.ServeHTTP(w, r) }
 
 // create a new router for an app
-func NewRouter(spec *openapi.APISpec) (*common.Node, *WildcardRouter) {
+func NewRouter(spec interface{}) (*tree.Node, *WildcardRouter) {
 
-	root := common.Root()
+	root := tree.NewNode()
 
 	root.Config.Spec = spec
 
-	f := func (res http.ResponseWriter, r *http.Request) {
+	f := func (res www.ResponseWriter, r *www.Request) {
 
-		node := common.Root()
-
-		req := NewRequestObject(node, res, r)
-
-		// check for subdomain routing
-
-		subdomain := strings.Split(r.URL.Host, ".")[0]
-
-		subNode := node.Config.SubdomainTrees[subdomain]
-		if subNode != nil {
-
-			subNode.MainHandler(req, r.URL.Path)
-			return
-
-		}
-
-		node.MainHandler(req, r.URL.Path)
+		core.MainHandler(
+			NewRequestObject(root, res, r),
+			root,
+			r.URL.Path,
+		)
 
 	}
 
-	return root, &WildcardRouter{http.HandlerFunc(f)}
+	return root, &WildcardRouter{www.HandlerFunc(f)}
 }
