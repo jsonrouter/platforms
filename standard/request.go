@@ -1,28 +1,25 @@
-package router
+package jsonrouter
 
 import 	(
-		"io"
-		www "net/http"
-		"io/ioutil"
-		"encoding/json"
-		"github.com/hjmodha/goDevice"
-		//
-		"github.com/golangdaddy/go.uuid"
-		"github.com/jsonrouter/validation"
-		"github.com/jsonrouter/core/http"
-		"github.com/jsonrouter/core/tree"
-		"github.com/jsonrouter/logging"
-		"github.com/jsonrouter/core/config"
-		)
+	"io"
+	www "net/http"
+	"io/ioutil"
+	"encoding/json"
+	"github.com/hjmodha/goDevice"
+	"github.com/golangdaddy/go.uuid"
+	//
+	"github.com/jsonrouter/validation"
+	"github.com/jsonrouter/core/http"
+	"github.com/jsonrouter/core/tree"
+	"github.com/jsonrouter/logging"
+)
 
 type Request struct {
-	log logging.Logger
-	config *config.Config
-	path string
-	Node *tree.Node
-	method string
+	node *tree.Node
 	res www.ResponseWriter
 	r *www.Request
+	path string
+	method string
 	params map[string]interface{}
 	bodyParams map[string]interface{}
 	Object map[string]interface{}
@@ -32,12 +29,11 @@ type Request struct {
 func NewRequestObject(node *tree.Node, res www.ResponseWriter, r *www.Request) *Request {
 
 	return &Request{
-		config: node.Config,
-		Node: node,
+		node: node,
 		res: res,
 		r: r,
 		method: r.Method,
-		params: node.RequestParameters(),
+		params: node.RequestParams,
 		Object: validation.Object{},
 		Array: validation.Array{},
 	}
@@ -54,22 +50,14 @@ func (req *Request) UID() (string, error) {
 }
 
 func (req *Request) Log() logging.Logger {
-
-	return req.config.Log
-}
-
-func (req *Request) Config() *config.Config {
-
-	return req.config
+	return req.node.Config.Log
 }
 
 func (req *Request) Res() www.ResponseWriter {
-
 	return req.res
 }
 
 func (req *Request) R() interface{} {
-
 	return req.r
 }
 
@@ -92,7 +80,7 @@ func (req *Request) BodyObject() map[string]interface{} {
 
 func (req *Request) FullPath() string {
 
-	return req.Node.FullPath()
+	return req.node.FullPath()
 }
 
 func (req *Request) Method() string {

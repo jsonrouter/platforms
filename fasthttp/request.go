@@ -1,4 +1,4 @@
-package router
+package jsonrouter
 
 import 	(
 		"io"
@@ -13,12 +13,11 @@ import 	(
 		"github.com/jsonrouter/validation"
 		"github.com/jsonrouter/core/http"
 		"github.com/jsonrouter/core/tree"
-		"github.com/jsonrouter/core/config"
 		)
 
 type Request struct {
 	ctx *fasthttp.RequestCtx
-	config *config.Config
+	config *tree.Config
 	path string
 	Node *tree.Node
 	method string
