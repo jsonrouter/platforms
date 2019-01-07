@@ -34,7 +34,7 @@ func NewRequestObject(node *tree.Node, ctx *fasthttp.RequestCtx) *Request {
 		config:			node.Config,
 		Node:			node,
 		method:			string(ctx.Method()),
-		params:			node.RequestParameters(),
+		params:			node.RequestParams,
 		bodyParams:		map[string]interface{}{},
 		Object:			validation.Object{},
 		Array:			validation.Array{},
@@ -54,11 +54,6 @@ func (req *Request) UID() (string, error) {
 func (req *Request) Log() logging.Logger {
 
 	return req.config.Log
-}
-
-func (req *Request) Config() *config.Config {
-
-	return req.config
 }
 
 func (req *Request) Res() www.ResponseWriter {

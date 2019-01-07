@@ -12,13 +12,12 @@ import 	(
 	"github.com/jsonrouter/core/http"
 	"github.com/jsonrouter/logging"
 	"github.com/jsonrouter/logging/ae"
-	"github.com/jsonrouter/core/config"
 	"github.com/jsonrouter/core/tree"
 	"github.com/golangdaddy/go.uuid"
 	)
 
 type Request struct {
-	config *config.Config
+	config *tree.Config
 	path string
 	Node *tree.Node
 	method string
@@ -39,7 +38,7 @@ func NewRequestObject(node *tree.Node, res www.ResponseWriter, r *www.Request) *
 		Node:			node,
 		res:		  	res,
 		r: 				r,
-		params:			node.RequestParameters(),
+		params:			node.RequestParams,
 		bodyParams:		map[string]interface{}{},
 		method:			r.Method,
 	}
@@ -66,11 +65,6 @@ func (req *Request) Log() logging.Logger {
 		req.logClient = logs.NewClient(appengine.AppID(ctx), ctx).NewLogger()
 	}
 	return req.logClient
-}
-
-func (req *Request) Config() *config.Config {
-
-	return req.config
 }
 
 func (req *Request) Res() www.ResponseWriter {

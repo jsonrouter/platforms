@@ -21,9 +21,10 @@ func (router *WildcardRouter) ServeHTTP(w www.ResponseWriter, r *www.Request) { 
 // create a new router for an app
 func NewRouter(spec interface{}) (*tree.Node, *WildcardRouter) {
 
-	root := tree.NewNode()
-
-	root.Config.Spec = spec
+	config := &tree.Config{
+		Spec: spec,
+	}
+	root := tree.NewNode(config)
 
 	f := func (res www.ResponseWriter, r *www.Request) {
 

@@ -24,7 +24,11 @@ func (router FastHttpRouter) ServeTLS(port int, crt, key string) error {
 
 func NewRouter(logger logging.Logger, spec interface{}) (*tree.Node, FastHttpRouter) {
 
-	root := tree.NewNode()
+	config := &tree.Config{
+		Spec: spec,
+		Log: logger,
+	}
+	root := tree.NewNode(config)
 
 	root.Config.Spec = spec
 	root.Config.Log = logger
