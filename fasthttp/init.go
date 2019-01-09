@@ -22,7 +22,7 @@ func (router FastHttpRouter) ServeTLS(port int, crt, key string) error {
 	return fasthttp.ListenAndServeTLS(":"+strconv.Itoa(port), crt, key, fasthttp.RequestHandler(router))
 }
 
-func NewRouter(logger logging.Logger, spec interface{}) (*tree.Node, FastHttpRouter) {
+func New(logger logging.Logger, spec interface{}) (*tree.Node, FastHttpRouter) {
 
 	config := &tree.Config{
 		Spec: spec,
