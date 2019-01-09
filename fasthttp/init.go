@@ -8,6 +8,7 @@ import	(
 	"github.com/jsonrouter/logging"
 	"github.com/jsonrouter/core"
 	"github.com/jsonrouter/core/tree"
+	"github.com/jsonrouter/platforms"
 )
 
 type FastHttpRouter func (ctx *fasthttp.RequestCtx)
