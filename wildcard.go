@@ -1,4 +1,4 @@
-package jsonrouter
+package platforms
 
 import (
 	"regexp"

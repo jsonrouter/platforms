@@ -24,8 +24,10 @@ func New(log logging.Logger, spec interface{}) (*platforms.Router, error) {
 	}
 	root := tree.NewNode(config)
 
+	platforms.AddSpecEndpoints(root)
+
 	return platforms.NewRouter(
-		&WildcardRouter{
+		&platforms.WildcardRouter{
 			http.HandlerFunc(
 				func (res http.ResponseWriter, r *http.Request) {
 

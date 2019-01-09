@@ -30,8 +30,7 @@ func New(logger logging.Logger, spec interface{}) (*tree.Node, FastHttpRouter) {
 	}
 	root := tree.NewNode(config)
 
-	root.Config.Spec = spec
-	root.Config.Log = logger
+	platforms.AddSpecEndpoints(root)
 
 	return root, FastHttpRouter(
 		func (ctx *fasthttp.RequestCtx) {

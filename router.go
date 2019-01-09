@@ -11,22 +11,12 @@ const (
 	CONST_SPEC_PATH_V3 = "/openapi.spec.v3.json"
 )
 
-func NewRouter(handler http.Handler, node *tree.Node) *Router {
-
-	node.Add(
-		CONST_SPEC_PATH_V2,
-	).GET(
-		node.Config.ServeSpec,
-	)
-
-	node.Add(
-		CONST_SPEC_PATH_V3,
-	).GET(
-		node.Config.ServeSpec,
-	)
+func NewRouter(node *tree.Node, handlerFunc func (res http.ResponseWriter, r *http.Request)) *Router {
 
 	return &Router{
-		handler,
+		&WildcardRouter{
+			http.HandlerFunc(handlerFunc),
+		},
 		node,
 	}
 }
@@ -34,4 +24,10 @@ func NewRouter(handler http.Handler, node *tree.Node) *Router {
 type Router struct {
 	http.Handler
 	*tree.Node
+}
+
+func AddSpecEndpoints(root *tree.Node) {
+	root.Add("/openapi.spec.json").GET(
+		root.Config.SpecHandler,
+	)
 }
