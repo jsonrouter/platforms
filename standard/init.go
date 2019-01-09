@@ -27,9 +27,8 @@ func New(log logging.Logger, spec interface{}) (*platforms.Router, error) {
 	platforms.AddSpecEndpoints(root)
 
 	return platforms.NewRouter(
-		&platforms.WildcardRouter{
-			http.HandlerFunc(
-				func (res http.ResponseWriter, r *http.Request) {
+		root,
+		func (res http.ResponseWriter, r *http.Request) {
 
 					core.MainHandler(
 						NewRequestObject(root, res, r),
@@ -37,9 +36,6 @@ func New(log logging.Logger, spec interface{}) (*platforms.Router, error) {
 						r.URL.Path,
 					)
 
-				},
-			),
 		},
-		root,
 	), nil
 }
