@@ -41,6 +41,10 @@ func NewRequestObject(node *tree.Node, ctx *fasthttp.RequestCtx) *Request {
 	}
 }
 
+func (req *Request) Testing() bool {
+	return false
+}
+
 func (req *Request) UID() (string, error) {
 
 	uid, err := uuid.NewV4()

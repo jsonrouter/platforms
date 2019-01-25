@@ -44,6 +44,10 @@ func NewRequestObject(node *tree.Node, res www.ResponseWriter, r *www.Request) *
 	}
 }
 
+func (req *Request) Testing() bool {
+	return false
+}
+
 func (req *Request) UID() (string, error) {
 
 	uid, err := uuid.NewV4()
