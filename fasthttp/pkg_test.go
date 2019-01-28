@@ -3,6 +3,9 @@ package jsonrouter
 import (
 	"time"
 	"testing"
+	//
+	"github.com/jsonrouter/core/openapi/v2"
+	"github.com/jsonrouter/logging/testing"
 )
 
 const (
@@ -11,7 +14,10 @@ const (
 
 func TestServe(t *testing.T) {
 
-	_, router := NewRouter("localhost")
+	_, router := New(
+		logs.NewClient().NewLogger(),
+		openapiv2.New("localhost", "testing"),
+	)
 
 
 	failChan := make(chan error)
