@@ -141,12 +141,12 @@ func (req *Request) SetBodyParams(m map[string]interface{}) { req.bodyParams = m
 
 func (req *Request) GetHeader(k string) string {
 
-	return string(req.ctx.Request.Header.Peek(k))
+	return string(req.ctx.Response.Header.Peek(k))
 }
 
 func (req *Request) SetHeader(k, v string) {
 
-	req.ctx.Request.Header.Set(k, v)
+	req.ctx.Response.Header.Set(k, v)
 }
 
 func (req *Request) RawBody() (*http.Status, []byte) {
