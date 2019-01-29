@@ -139,13 +139,19 @@ func (req *Request) BodyParams() map[string]interface{} { return req.bodyParams 
 func (req *Request) SetBodyParam(k string, v interface{}) { req.bodyParams[k] = v }
 func (req *Request) SetBodyParams(m map[string]interface{}) { req.bodyParams = m }
 
-func (req *Request) GetHeader(k string) string {
+func (req *Request) GetRequestHeader(k string) string {
+	return string(req.ctx.Request.Header.Peek(k))
+}
 
+func (req *Request) SetRequestHeader(k, v string) {
+	req.ctx.Request.Header.Set(k, v)
+}
+
+func (req *Request) GetResponseHeader(k string) string {
 	return string(req.ctx.Response.Header.Peek(k))
 }
 
-func (req *Request) SetHeader(k, v string) {
-
+func (req *Request) SetResponseHeader(k, v string) {
 	req.ctx.Response.Header.Set(k, v)
 }
 

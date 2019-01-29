@@ -130,19 +130,24 @@ func (req *Request) BodyParams() map[string]interface{} { return req.bodyParams 
 func (req *Request) SetBodyParam(k string, v interface{}) { req.bodyParams[k] = v }
 func (req *Request) SetBodyParams(m map[string]interface{}) { req.bodyParams = m }
 
-func (req *Request) GetHeader(k string) string {
-
-	header, ok := req.r.Header[k]
+func (req *Request) GetResponseHeader(k string) string {
+	header, ok := req.res.Header()[k]
 	if !ok || len(header) == 0 {
 		return ""
 	}
-
-	return req.r.Header[k][0]
+	return req.res.Header()[k][0]
 }
 
-func (req *Request) SetHeader(k, v string) {
-
+func (req *Request) SetResponseHeader(k, v string) {
 	req.res.Header().Set(k, v)
+}
+
+func (req *Request) GetRequestHeader(k string) string {
+	return req.r.Header.Get(k)
+}
+
+func (req *Request) SetRequestHeader(k, v string) {
+	req.r.Header.Set(k, v)
 }
 
 func (req *Request) RawBody() (*http.Status, []byte) {
