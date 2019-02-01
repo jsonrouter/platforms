@@ -24,6 +24,7 @@ func New(log logging.Logger, spec interface{}) (*platforms.Router, error) {
 		Log: log,
 	}
 	root := tree.NewNode(config)
+	metrics.Init(root)
 
 	platforms.AddSpecEndpoints(root)
 
