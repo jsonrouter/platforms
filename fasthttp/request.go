@@ -121,7 +121,7 @@ func (req *Request) Write(b []byte) {
 
 func (req *Request) WriteString(s string) {
 
-	req.res.WriteString(s)
+	req.ctx.WriteString(s)
 }
 
 func (req *Request) ServeFile(path string) {
