@@ -31,3 +31,9 @@ func AddSpecEndpoints(root *tree.Node) {
 		root.Config.SpecHandler,
 	)
 }
+
+func AddMetricsEndpoints(root *tree.Node) {
+	root.Add("/metrics").GET(
+		root.Config.MetricsHandler,
+	)
+}

@@ -92,6 +92,11 @@ func (req *Request) Method() string {
 	return req.method
 }
 
+func (req *Request) Node() *tree.Node {
+
+	return req.node
+}
+
 func (req *Request) Device() string {
 	return string(
 		goDevice.GetType(
