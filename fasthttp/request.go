@@ -119,6 +119,11 @@ func (req *Request) Write(b []byte) {
 	req.ctx.Write(b)
 }
 
+func (req *Request) WriteString(s string) {
+
+	req.ctx.WriteString(s)
+}
+
 func (req *Request) ServeFile(path string) {
 
 	fasthttp.ServeFile(req.ctx, path)

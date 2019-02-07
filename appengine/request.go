@@ -129,6 +129,11 @@ func (req *Request) Write(b []byte) {
 	req.res.Write(b)
 }
 
+func (req *Request) WriteString(s string) {
+
+	req.res.Write([]byte(s))
+}
+
 func (req *Request) ServeFile(path string) {
 
 	www.ServeFile(req.Res(), req.R().(*www.Request), path)
