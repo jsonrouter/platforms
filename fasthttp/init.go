@@ -33,6 +33,7 @@ func New(logger logging.Logger, spec interface{}) (*tree.Node, FastHttpRouter) {
 			Timers: map[string]*metrics.Timer{
 				"requestTime": &metrics.Timer{
 					Name : "requestTime",
+					BufferSize: 1000,
 				},
 			},
 			Counters: map[string]*metrics.Counter{
