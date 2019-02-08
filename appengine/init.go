@@ -1,4 +1,4 @@
-package router
+package jsonrouter
 
 import	(
 		www "net/http"
@@ -10,7 +10,7 @@ import	(
 		)
 
 // create a new router for an app
-func NewRouter(spec interface{}) (*platforms.Router, error) {
+func New(spec interface{}) (*platforms.Router, error) {
 
 	config := &tree.Config{
 		Spec: spec,
