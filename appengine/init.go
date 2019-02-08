@@ -18,6 +18,7 @@ func NewRouter(spec interface{}) (*platforms.Router, error) {
 			Timers: map[string]*metrics.Timer{
 				"requestTime": &metrics.Timer{
 					Name : "requestTime",
+					BufferSize : 10,
 				},
 			},
 			Counters: map[string]*metrics.Counter{
