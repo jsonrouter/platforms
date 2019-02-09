@@ -9,7 +9,7 @@ import	(
 	"github.com/jsonrouter/core"
 	"github.com/jsonrouter/core/tree"
 	"github.com/jsonrouter/platforms"
-	"github.com/chrysmore/metrics"
+	"github.com/jsonrouter/core/metrics"
 )
 
 type FastHttpRouter func (ctx *fasthttp.RequestCtx)
