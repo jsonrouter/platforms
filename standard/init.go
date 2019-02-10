@@ -9,7 +9,6 @@ import	(
 	"github.com/jsonrouter/core"
 	"github.com/jsonrouter/core/tree"
 	"github.com/jsonrouter/core/openapi"
-	"github.com/jsonrouter/core/metrics"
 )
 
 // Creates a new Router object that is ready to serve.
