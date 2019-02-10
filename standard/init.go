@@ -22,29 +22,10 @@ func New(log logging.Logger, spec interface{}) (*platforms.Router, error) {
 	config := &tree.Config{
 		Spec: spec,
 		Log: log,
-		Metrics: metrics.Metrics{
-			Timers: map[string]*metrics.Timer{
-				"requestTime": &metrics.Timer{
-					Name : "requestTime",
-					BufferSize: 1000,
-				},
-			},
-			Counters: map[string]*metrics.Counter{
-				"requestCount" : &metrics.Counter{
-					Name : "requestCount",
-				},
-			},
-			MultiCounters: map[string]*metrics.MultiCounter{
-				"responseCodes" : &metrics.MultiCounter{
-					Name : "responseCodes",
-					Counters : map[string]*metrics.Counter{},
-				},
-			},
-			Results: map[string]interface{}{},
-		},
+		Metrics: platforms.InitMetrics(),
 		MetResults: map[string]interface{}{},
 	}
-	
+
 	root := tree.NewNode(config)
 
 	platforms.AddMetricsEndpoints(root)
