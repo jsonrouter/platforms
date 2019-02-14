@@ -3,7 +3,7 @@ package jsonrouter
 
 import	(
 	"net/http"
-	//
+	//"fmt"
 	"github.com/jsonrouter/platforms"
 	"github.com/jsonrouter/logging"
 	"github.com/jsonrouter/core"
