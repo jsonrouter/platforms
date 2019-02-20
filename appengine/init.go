@@ -8,7 +8,7 @@ import	(
 		"github.com/jsonrouter/platforms"
 		)
 
-// create a new router for an app
+// New create a new router for an app
 func New(spec interface{}) (*platforms.Router, error) {
 
 	config := &tree.Config{

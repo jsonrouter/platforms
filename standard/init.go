@@ -11,7 +11,7 @@ import	(
 	"github.com/jsonrouter/core/openapi"
 )
 
-// Creates a new Router object that is ready to serve.
+// New creates a new Router object that is ready to serve.
 func New(log logging.Logger, spec interface{}) (*platforms.Router, error) {
 
 	if err := openapi.ValidSpec(spec); err != nil {
