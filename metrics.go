@@ -27,6 +27,21 @@ func InitMetrics() metrics.Metrics {
 				Counters : map[string]*metrics.Counter{},
 			},
 		},
+		BenchMarks: map[string]*metrics.BenchMark{
+				"requestMethodsBench": &metrics.BenchMark {
+					Name: "methodsBenchMark",
+					Timers: map[string]*metrics.Timer{
+						"GET": &metrics.Timer{
+							Name : "GET",
+							BufferSize : 1000,
+						},
+						"POST": &metrics.Timer{
+							Name : "POST",
+							BufferSize : 1000,
+						},
+					},
+				},
+			},
 		Results: map[string]interface{}{},
 	}
 }
