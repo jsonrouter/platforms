@@ -13,16 +13,19 @@ import	(
 
 type FastHttpRouter func (ctx *fasthttp.RequestCtx)
 
+// Serve is a function which calls the ListenAndServe func in the fasthttp package.
 func (router FastHttpRouter) Serve(port int) error {
 
 	return fasthttp.ListenAndServe(":"+strconv.Itoa(port), fasthttp.RequestHandler(router))
 }
 
+// Serve is a function which calls the ListenAndServeTLS func in the fasthttp package.
 func (router FastHttpRouter) ServeTLS(port int, crt, key string) error {
 
 	return fasthttp.ListenAndServeTLS(":"+strconv.Itoa(port), crt, key, fasthttp.RequestHandler(router))
 }
 
+// New creates a JSONrouter for the fasthttp platform.
 func New(logger logging.Logger, spec interface{}) (*tree.Node, FastHttpRouter) {
 
 	config := &tree.Config{

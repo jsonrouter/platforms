@@ -5,9 +5,9 @@ import 	(
 	"sync"
 	www "net/http"
 	"io/ioutil"
-	"encoding/json"
-	"github.com/hjmodha/goDevice"
 	//
+	"github.com/hjmodha/goDevice"
+	json "github.com/json-iterator/go"
 	"google.golang.org/appengine"
 	"github.com/jsonrouter/core/http"
 	"github.com/jsonrouter/logging"
@@ -52,23 +52,18 @@ func (req *Request) Testing() bool {
 
 // UID returns the UUIDv4 which was randomply generated for this request.
 func (req *Request) UID() (string, error) {
-
 	uid, err := uuid.NewV4()
 	if err != nil {
 		return "", err
 	}
-
 	return uid.String(), nil
 }
 
 // Log returns the logging client.
 func (req *Request) Log() logging.Logger {
-
 	ctx := appengine.NewContext(req.r)
-
 	req.Lock()
 	defer req.Unlock()
-
 	if req.logClient == nil {
 		req.logClient = logs.NewClient(appengine.AppID(ctx), ctx).NewLogger()
 	}
@@ -77,49 +72,40 @@ func (req *Request) Log() logging.Logger {
 
 // Res returns the 'net/http' ResponseWriter.
 func (req *Request) Res() www.ResponseWriter {
-
 	return req.res
 }
 
 // Res returns the 'net/http' Request.
 func (req *Request) R() interface{} {
-
 	return req.r
 }
 
 // IsTLS returns the state of whether this request is a secure request.
 func (req *Request) IsTLS() bool {
-
 	if req.r.TLS == nil { return false }
-
 	return req.r.TLS.HandshakeComplete
 }
 
 // BodyArray returns the HTTP body which was previously unmarshaled into a slice.
 func (req *Request) BodyArray() []interface{} {
-
 	return req.Array
 }
 
 // BodyObject returns the HTTP body which was previously unmarshaled into a map.
 func (req *Request) BodyObject() map[string]interface{} {
-
 	return req.Object
 }
 
 // FullPath returns the path for the http request.
 func (req *Request) FullPath() string {
-
 	if len(req.path) == 0 {
 		req.path = req.Node.FullPath()
 	}
-
 	return req.path
 }
 
 // Method returns the HTTP method of the request, e.g. POST, GET, PUT etc
 func (req *Request) Method() string {
-
 	return req.method
 }
 
@@ -134,13 +120,12 @@ func (req *Request) Writer() io.Writer {
 	return req.res
 }
 
-// Writer calls the write method on the 'core/http' responsewriter
-func (req *Request) Write(b []byte) {
-
-	req.res.Write(b)
+// Write calls the write method on the 'core/http' responsewriter
+func (req *Request) Write(b []byte) (int, error) {
+	return req.res.Write(b)
 }
 
-// Writer calls the write method on the 'core/http' responsewriter after transforming the input to a byte slice.
+// WriteString calls the write method on the 'core/http' responsewriter after transforming the input to a byte slice.
 func (req *Request) WriteString(s string) {
 
 	req.res.Write([]byte(s))
@@ -158,14 +143,22 @@ func (req *Request) Body(k string) interface{} {
 	return req.Object[k]
 }
 
-
+// Param gets a variable that has been stored in the params object.
+// This could be an arguement from the request path, or have other vars stored there for random access.
 func (req *Request) Param(k string) interface{} { return req.params[k] }
+// Params returns the params object.
+// This object is intended to be used for storing path parameters.
 func (req *Request) Params() map[string]interface{} { return req.params }
+// SetParam gets a value from the params object.
 func (req *Request) SetParam(k string, v interface{}) { req.params[k] = v }
+// SetParam replaces the params object with the supplied map.
 func (req *Request) SetParams(m map[string]interface{}) { req.params = m }
-
+// BodyParam sets a value in the bodyparams object.
 func (req *Request) BodyParam(k string) interface{} { return req.bodyParams[k] }
+// BodyParam sets a value in the bodyparams object.
 func (req *Request) BodyParams() map[string]interface{} { return req.bodyParams }
+// BodyParam returns the params object.
+// This object is intended to be used for storing path parameters.
 func (req *Request) SetBodyParam(k string, v interface{}) { req.bodyParams[k] = v }
 func (req *Request) SetBodyParams(m map[string]interface{}) { req.bodyParams = m }
 
@@ -214,6 +207,7 @@ func (req *Request) ReadBodyObject() *http.Status {
 	return nil
 }
 
+// ReadBodyArray unmarsgals
 func (req *Request) ReadBodyArray() *http.Status {
 
 	body := req.r.Body
@@ -228,6 +222,7 @@ func (req *Request) ReadBodyArray() *http.Status {
 	return nil
 }
 
+// Fail sends HTTP 500 status error.
 func (req *Request) Fail() *http.Status {
 
 	return http.Fail()
@@ -238,13 +233,15 @@ func (req *Request) Respond(args ...interface{}) *http.Status {
 	return http.Respond(args...)
 }
 
-func (req *Request) Redirect(path string, code int) *http.Status {
+// Redirect redirects the http to the destination URL.
+func (req *Request) Redirect(url string, code int) *http.Status {
 
 	www.Redirect(req.res, req.r, path, code)
 
 	return nil
 }
 
+// HttpError responds to the HTTP request with an error status.
 func (req *Request) HttpError(msg string, code int) {
 
 	www.Error(req.res, msg, code)

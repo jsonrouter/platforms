@@ -26,6 +26,7 @@ type Request struct {
 	Array []interface{}
 }
 
+// NewRequestObject constructs a new Request implementation for the vanilla platform.
 func NewRequestObject(node *tree.Node, res www.ResponseWriter, r *www.Request) *Request {
 
 	return &Request{
@@ -110,9 +111,8 @@ func (req *Request) Writer() io.Writer {
 	return req.res
 }
 
-func (req *Request) Write(b []byte) {
-
-	req.res.Write(b)
+func (req *Request) Write(b []byte) (int, error) {
+	return req.res.Write(b)
 }
 
 func (req *Request) WriteString(s string) {

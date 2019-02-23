@@ -27,6 +27,7 @@ type Request struct {
 	Array []interface{}
 }
 
+// NewRequestObject constructs a new Request implementation for the fasthttp latform.
 func NewRequestObject(node *tree.Node, ctx *fasthttp.RequestCtx) *Request {
 
 	return &Request{
@@ -114,9 +115,8 @@ func (req *Request) Writer() io.Writer {
 	return req.ctx.Response.BodyWriter()
 }
 
-func (req *Request) Write(b []byte) {
-
-	req.ctx.Write(b)
+func (req *Request) Write(b []byte) (int, error) {
+	return req.ctx.Write(b)
 }
 
 func (req *Request) WriteString(s string) {
