@@ -55,6 +55,7 @@ Appengine:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
+ 	
  	id := req.Param("productID").(string)
  	product := getProduct(id)
  
@@ -62,6 +63,7 @@ Appengine:
  }
  
  func (app *App) api_product_new(req http.Request) *http.Status {
+ 	
  	product := newProduct()
  	name := req.BodyParam("name").(string)
  	product.name = name
@@ -117,6 +119,7 @@ Fasthttp:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
+ 	
  	id := req.Param("productID").(string)
  	product := getProduct(id)
  
@@ -124,6 +127,7 @@ Fasthttp:
  }
  
  func (app *App) api_product_new(req http.Request) *http.Status {
+ 	
  	product := newProduct()
  	name := req.BodyParam("name").(string)
  	product.name = name
@@ -191,6 +195,7 @@ Standard:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
+ 	
  	id := req.Param("productID").(string)
  	product := getProduct(id)
  
@@ -198,6 +203,7 @@ Standard:
  }
  
  func (app *App) api_product_new(req http.Request) *http.Status {
+ 	
  	product := newProduct()
  	name := req.BodyParam("name").(string)
  	product.name = name
