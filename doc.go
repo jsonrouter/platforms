@@ -4,6 +4,7 @@ Package platforms Examples
 Appengine:
 
  import (
+ 	"github.com/jsonrouter/core/http"
  	"github.com/jsonrouter/platforms/appengine"
  	ht "net/http"
  	"github.com/jsonrouter/core/openapi/v2"
@@ -39,6 +40,7 @@ Appengine:
 Fasthttp:
 
  import (
+ 	"github.com/jsonrouter/core/http"
  	"github.com/jsonrouter/logging/testing"
  	"github.com/jsonrouter/platforms/fasthttp"
  	"github.com/jsonrouter/core/openapi/v2"
@@ -78,6 +80,7 @@ Fasthttp:
 Standard:
 
  import (
+ 	"github.com/jsonrouter/core/http"
  	"github.com/jsonrouter/logging/testing"
  	"github.com/jsonrouter/platforms/standard"
  	"github.com/jsonrouter/core/openapi/v2"
