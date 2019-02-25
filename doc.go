@@ -19,6 +19,30 @@ Appengine:
  		// Handle Error //
  	}
  
+ 
+ 	api := service.Add("/api")
+ 
+ 	apiProduct := api.Add("/product")
+ 
+ 		apiProduct.Param(validation.StringExact(30), "productID").GET(
+ 			app.api_product_get,
+ 		).Description(
+ 			"Gets the specified product",
+ 		).Response(
+ 			Product{},
+ 		)
+ 
+ 		apiProduct.Add("/new").POST(
+ 			app.api_product_new,
+ 		).Required(
+ 			&validation.Payload{
+ 				"name": validation.String(),
+ 		}.Description(
+ 			"Creates new product",
+ 		).Response(
+ 			Product{},
+ 		)
+ 
  	panic(
  		ht.ListenAndServe(
  			fmt.Sprintf(
@@ -31,9 +55,23 @@ Appengine:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
- 	// Do something 
- 	return nil
+ 	id := req.Param("productID").(string)
+ 	
+ 	product := getProduct(id)
+ 
+ 	return product
  }
+ 
+ func (app *App) api_product_new(req http.Request) *http.Status {
+ 	product := newProduct()
+ 
+ 	name := req.BodyParam("name").(string)
+ 
+ 	product.name = name
+ 	
+ 	return req.Respond(product)
+ }
+
 
 Fasthttp:
 
@@ -55,13 +93,26 @@ Fasthttp:
  
  	api := service.Add("/api")
  
- 	api.Add("/product").Param(validation.StringExact(30), "productID").GET(
- 		app.api_product_get,
- 	).Description(
- 		"Gets the specified product",
- 	).Response(
- 		Product{},
- 	)
+ 	apiProduct := api.Add("/product")
+ 
+ 		apiProduct.Param(validation.StringExact(30), "productID").GET(
+ 			app.api_product_get,
+ 		).Description(
+ 			"Gets the specified product",
+ 		).Response(
+ 			Product{},
+ 		)
+ 
+ 		apiProduct.Add("/new").POST(
+ 			app.api_product_new,
+ 		).Required(
+ 			&validation.Payload{
+ 				"name": validation.String(),
+ 		}.Description(
+ 			"Creates new product",
+ 		).Response(
+ 			Product{},
+ 		)
  
  	panic(
  		service.Serve(PORT),
@@ -69,8 +120,21 @@ Fasthttp:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
- 	// Do something 
- 	return nil
+ 	id := req.Param("productID").(string)
+ 	
+ 	product := getProduct(id)
+ 
+ 	return product
+ }
+ 
+ func (app *App) api_product_new(req http.Request) *http.Status {
+ 	product := newProduct()
+ 
+ 	name := req.BodyParam("name").(string)
+ 
+ 	product.name = name
+ 	
+ 	return req.Respond(product)
  }
 
 Standard:
@@ -100,13 +164,26 @@ Standard:
  
  	api := service.Add("/api")
  
- 	api.Add("/product").Param(validation.StringExact(30), "productID").GET(
- 		app.api_product_get,
- 	).Description(
- 		"Gets the specified product",
- 	).Response(
- 		Product{},
- 	)
+ 	apiProduct := api.Add("/product")
+ 
+ 		apiProduct.Param(validation.StringExact(30), "productID").GET(
+ 			app.api_product_get,
+ 		).Description(
+ 			"Gets the specified product",
+ 		).Response(
+ 			Product{},
+ 		)
+ 
+ 		apiProduct.Add("/new").POST(
+ 			app.api_product_new,
+ 		).Required(
+ 			&validation.Payload{
+ 				"name": validation.String(),
+ 		}.Description(
+ 			"Creates new product",
+ 		).Response(
+ 			Product{},
+ 		)
  
  	panic(
  		ht.ListenAndServe(
@@ -120,8 +197,21 @@ Standard:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
- 	// Do something 
- 	return nil
+ 	id := req.Param("productID").(string)
+ 	
+ 	product := getProduct(id)
+ 
+ 	return product
+ }
+ 
+ func (app *App) api_product_new(req http.Request) *http.Status {
+ 	product := newProduct()
+ 
+ 	name := req.BodyParam("name").(string)
+ 
+ 	product.name = name
+ 	
+ 	return req.Respond(product)
  }
 
 */
