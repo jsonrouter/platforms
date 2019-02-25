@@ -119,9 +119,8 @@ func (req *Request) Write(b []byte) (int, error) {
 	return req.ctx.Write(b)
 }
 
-func (req *Request) WriteString(s string) {
-
-	req.ctx.WriteString(s)
+func (req *Request) WriteString(s string) (int, error) {
+	return req.ctx.WriteString(s)
 }
 
 func (req *Request) ServeFile(path string) {

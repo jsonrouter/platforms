@@ -115,9 +115,8 @@ func (req *Request) Write(b []byte) (int, error) {
 	return req.res.Write(b)
 }
 
-func (req *Request) WriteString(s string) {
-
-	req.res.Write([]byte(s))
+func (req *Request) WriteString(s string) (int, error) {
+	return req.res.Write([]byte(s))
 }
 
 func (req *Request) ServeFile(path string) {

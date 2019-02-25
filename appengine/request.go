@@ -126,14 +126,12 @@ func (req *Request) Write(b []byte) (int, error) {
 }
 
 // WriteString calls the write method on the 'core/http' responsewriter after transforming the input to a byte slice.
-func (req *Request) WriteString(s string) {
-
-	req.res.Write([]byte(s))
+func (req *Request) WriteString(s string) (int, error) {
+	return req.res.Write([]byte(s))
 }
 
 // ServeFile serves the file from the path specified.
 func (req *Request) ServeFile(path string) {
-
 	www.ServeFile(req.Res(), req.R().(*www.Request), path)
 }
 
@@ -236,7 +234,7 @@ func (req *Request) Respond(args ...interface{}) *http.Status {
 // Redirect redirects the http to the destination URL.
 func (req *Request) Redirect(url string, code int) *http.Status {
 
-	www.Redirect(req.res, req.r, path, code)
+	www.Redirect(req.res, req.r, url, code)
 
 	return nil
 }
