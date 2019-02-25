@@ -75,7 +75,7 @@ func (req *Request) Res() www.ResponseWriter {
 	return req.res
 }
 
-// Res returns the 'net/http' Request.
+// R returns the 'net/http' Request.
 func (req *Request) R() interface{} {
 	return req.r
 }
@@ -104,18 +104,18 @@ func (req *Request) FullPath() string {
 	return req.path
 }
 
-// Method returns the HTTP method of the request, e.g. POST, GET, PUT etc
+// Method returns the HTTP method of the request, e.g. POST, GET, PUT etc.
 func (req *Request) Method() string {
 	return req.method
 }
 
-// Device returns the device object
+// Device returns the device object.
 func (req *Request) Device() string {
 	r := req.R().(*www.Request)
 	return string(goDevice.GetType(r))
 }
 
-// Writer returns the response
+// Writer returns the responseWriter as an io.Writer.
 func (req *Request) Writer() io.Writer {
 	return req.res
 }
@@ -137,7 +137,6 @@ func (req *Request) ServeFile(path string) {
 
 // Body gets a field out of the map created from the body JSON.
 func (req *Request) Body(k string) interface{} {
-
 	return req.Object[k]
 }
 
@@ -147,19 +146,30 @@ func (req *Request) Param(k string) interface{} { return req.params[k] }
 // Params returns the params object.
 // This object is intended to be used for storing path parameters.
 func (req *Request) Params() map[string]interface{} { return req.params }
-// SetParam gets a value from the params object.
+// SetParam sets a value from the params object.
 func (req *Request) SetParam(k string, v interface{}) { req.params[k] = v }
 // SetParam replaces the params object with the supplied map.
 func (req *Request) SetParams(m map[string]interface{}) { req.params = m }
-// BodyParam sets a value in the bodyparams object.
+
+// BodyParam gets a variable that has been stored in the bodyparams object.
 func (req *Request) BodyParam(k string) interface{} { return req.bodyParams[k] }
-// BodyParam sets a value in the bodyparams object.
+// BodyParam returns the bodyparams object.
 func (req *Request) BodyParams() map[string]interface{} { return req.bodyParams }
-// BodyParam returns the params object.
-// This object is intended to be used for storing path parameters.
+// SetBodyParam sets a value from the params object.
 func (req *Request) SetBodyParam(k string, v interface{}) { req.bodyParams[k] = v }
+// SetBodyParams sets a value from the bodyparams object.
 func (req *Request) SetBodyParams(m map[string]interface{}) { req.bodyParams = m }
 
+// GetRequestHeader gets a request header value.
+func (req *Request) GetRequestHeader(k string) string {
+	return req.r.Header.Get(k)
+}
+// SetRequestHeader sets a request header value.
+func (req *Request) SetRequestHeader(k, v string) {
+	req.r.Header.Set(k, v)
+}
+
+// GetResponseHeader gets a header value from the response.
 func (req *Request) GetResponseHeader(k string) string {
 	header, ok := req.res.Header()[k]
 	if !ok || len(header) == 0 {
@@ -167,19 +177,12 @@ func (req *Request) GetResponseHeader(k string) string {
 	}
 	return req.res.Header()[k][0]
 }
-
+// SetResponseHeader sets a response header value.
 func (req *Request) SetResponseHeader(k, v string) {
 	req.res.Header().Set(k, v)
 }
 
-func (req *Request) GetRequestHeader(k string) string {
-	return req.r.Header.Get(k)
-}
-
-func (req *Request) SetRequestHeader(k, v string) {
-	req.r.Header.Set(k, v)
-}
-
+// RawBody returns the HTTP request body.
 func (req *Request) RawBody() (*http.Status, []byte) {
 
 	body := req.r.Body
@@ -191,6 +194,7 @@ func (req *Request) RawBody() (*http.Status, []byte) {
 	return nil, b
 }
 
+// ReadBodyObject unmarshals the body into a map of interface{}.
 func (req *Request) ReadBodyObject() *http.Status {
 
 	body := req.r.Body
@@ -205,7 +209,7 @@ func (req *Request) ReadBodyObject() *http.Status {
 	return nil
 }
 
-// ReadBodyArray unmarsgals
+// ReadBodyArray unmarshals the body into a slice of interface{}.
 func (req *Request) ReadBodyArray() *http.Status {
 
 	body := req.r.Body
@@ -226,6 +230,7 @@ func (req *Request) Fail() *http.Status {
 	return http.Fail()
 }
 
+// Respond calls the respond method which creates the response payload.
 func (req *Request) Respond(args ...interface{}) *http.Status {
 
 	return http.Respond(args...)

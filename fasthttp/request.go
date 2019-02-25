@@ -42,10 +42,12 @@ func NewRequestObject(node *tree.Node, ctx *fasthttp.RequestCtx) *Request {
 	}
 }
 
+// Testing returns whether or not this is a test implementation.
 func (req *Request) Testing() bool {
 	return false
 }
 
+// UID returns the UUIDv4 which was randomply generated for this request.
 func (req *Request) UID() (string, error) {
 
 	uid, err := uuid.NewV4()
@@ -56,11 +58,13 @@ func (req *Request) UID() (string, error) {
 	return uid.String(), nil
 }
 
+// Log returns the logging client.
 func (req *Request) Log() logging.Logger {
 
 	return req.config.Log
 }
 
+// Does nothing useful in httprouter
 func (req *Request) Res() www.ResponseWriter {
 
 	x := new(www.ResponseWriter)
@@ -68,26 +72,31 @@ func (req *Request) Res() www.ResponseWriter {
 	return *x
 }
 
+// Does nothing useful in httprouter
 func (req *Request) R() interface{} {
 
 	return req.ctx
 }
 
+// IsTLS returns the state of whether this request is a secure request.
 func (req *Request) IsTLS() bool {
 
 	return req.ctx.IsTLS()
 }
 
+// BodyArray returns the HTTP body which was previously unmarshaled into a slice.
 func (req *Request) BodyArray() []interface{} {
 
 	return req.Array
 }
 
+// BodyObject returns the HTTP body which was previously unmarshaled into a map.
 func (req *Request) BodyObject() map[string]interface{} {
 
 	return req.Object
 }
 
+// FullPath returns the path for the http request.
 func (req *Request) FullPath() string {
 
 	if len(req.path) == 0 {
@@ -99,11 +108,13 @@ func (req *Request) FullPath() string {
 	return req.path
 }
 
+// Method returns the HTTP method of the request, e.g. POST, GET, PUT etc
 func (req *Request) Method() string {
 
 	return req.method
 }
 
+// Device returns the device object.
 func (req *Request) Device() string {
 
 	//r := req.R().(*fasthttp.RequestCtx)
@@ -111,54 +122,70 @@ func (req *Request) Device() string {
 	return "?"
 }
 
+// Writer returns the responseWriter as an io.Writer.
 func (req *Request) Writer() io.Writer {
 	return req.ctx.Response.BodyWriter()
 }
 
+// Write calls the write method on the 'core/http' responsewriter
 func (req *Request) Write(b []byte) (int, error) {
 	return req.ctx.Write(b)
 }
 
+// WriteString calls the write method on the 'core/http' responsewriter after transforming the input to a byte slice.
 func (req *Request) WriteString(s string) (int, error) {
 	return req.ctx.WriteString(s)
 }
 
+// ServeFile serves the file from the path specified.
 func (req *Request) ServeFile(path string) {
-
 	fasthttp.ServeFile(req.ctx, path)
 }
 
+// Body gets a field out of the map created from the body JSON.
 func (req *Request) Body(k string) interface{} {
-
 	return req.Object[k]
 }
 
+// Param gets a variable that has been stored in the params object.
+// This could be an arguement from the request path, or have other vars stored there for random access.
 func (req *Request) Param(k string) interface{} { return req.params[k] }
+// Params returns the params object.
+// This object is intended to be used for storing path parameters.
 func (req *Request) Params() map[string]interface{} { return req.params }
+// SetParam sets a value from the params object.
 func (req *Request) SetParam(k string, v interface{}) { req.params[k] = v }
+// SetParam replaces the params object with the supplied map.
 func (req *Request) SetParams(m map[string]interface{}) { req.params = m }
 
+// BodyParam gets a variable that has been stored in the bodyparams object.
 func (req *Request) BodyParam(k string) interface{} { return req.bodyParams[k] }
+// BodyParam returns the bodyparams object.
 func (req *Request) BodyParams() map[string]interface{} { return req.bodyParams }
+// SetBodyParam sets a value from the params object.
 func (req *Request) SetBodyParam(k string, v interface{}) { req.bodyParams[k] = v }
+// SetBodyParams sets a value from the bodyparams object.
 func (req *Request) SetBodyParams(m map[string]interface{}) { req.bodyParams = m }
 
+// GetRequestHeader sets a request header value.
 func (req *Request) GetRequestHeader(k string) string {
 	return string(req.ctx.Request.Header.Peek(k))
 }
-
+// SetRequestHeader sets a request header value.
 func (req *Request) SetRequestHeader(k, v string) {
 	req.ctx.Request.Header.Set(k, v)
 }
 
+// GetResponseHeader gets a header value from the response.
 func (req *Request) GetResponseHeader(k string) string {
 	return string(req.ctx.Response.Header.Peek(k))
 }
-
+// SetResponseHeader sets a response header value.
 func (req *Request) SetResponseHeader(k, v string) {
 	req.ctx.Response.Header.Set(k, v)
 }
 
+// RawBody returns the HTTP request body.
 func (req *Request) RawBody() (*http.Status, []byte) {
 
 	b := req.ctx.PostBody()
@@ -168,6 +195,7 @@ func (req *Request) RawBody() (*http.Status, []byte) {
 	return nil, b
 }
 
+// ReadBodyObject unmarshals the body into a map of interface{}.
 func (req *Request) ReadBodyObject() *http.Status {
 
 	err := json.Unmarshal(req.ctx.PostBody(), &req.Object); if err != nil { return http.Respond(400, err.Error()) }
@@ -175,6 +203,7 @@ func (req *Request) ReadBodyObject() *http.Status {
 	return nil
 }
 
+// ReadBodyArray unmarshals the body into a slice of interface{}.
 func (req *Request) ReadBodyArray() *http.Status {
 
 	err := json.Unmarshal(req.ctx.PostBody(), &req.Array); if err != nil { return http.Respond(400, err.Error()) }
@@ -182,16 +211,19 @@ func (req *Request) ReadBodyArray() *http.Status {
 	return nil
 }
 
+// Fail sends HTTP 500 status error.
 func (req *Request) Fail() *http.Status {
 
 	return http.Fail()
 }
 
+// Redirect redirects the http to the destination URL.
 func (req *Request) Respond(args ...interface{}) *http.Status {
 
 	return http.Respond(args...)
 }
 
+// Redirect redirects the http to the destination URL.
 func (req *Request) Redirect(path string, code int) *http.Status {
 
 	req.ctx.Redirect(path, code)
@@ -199,6 +231,7 @@ func (req *Request) Redirect(path string, code int) *http.Status {
 	return nil
 }
 
+// Respond calls the respond method which creates the response payload.
 func (req *Request) HttpError(msg string, code int) {
 
 	req.ctx.Error(msg, code)
