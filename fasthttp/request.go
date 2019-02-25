@@ -10,7 +10,6 @@ import 	(
 		//"github.com/hjmodha/goDevice"
 		//
 		"github.com/jsonrouter/logging"
-		"github.com/jsonrouter/validation"
 		"github.com/jsonrouter/core/http"
 		"github.com/jsonrouter/core/tree"
 		)
@@ -37,8 +36,6 @@ func NewRequestObject(node *tree.Node, ctx *fasthttp.RequestCtx) *Request {
 		method:			string(ctx.Method()),
 		params:			node.RequestParams,
 		bodyParams:		map[string]interface{}{},
-		Object:			validation.Object{},
-		Array:			validation.Array{},
 	}
 }
 
@@ -198,7 +195,15 @@ func (req *Request) RawBody() (*http.Status, []byte) {
 // ReadBodyObject unmarshals the body into a map of interface{}.
 func (req *Request) ReadBodyObject() *http.Status {
 
-	err := json.Unmarshal(req.ctx.PostBody(), &req.Object); if err != nil { return http.Respond(400, err.Error()) }
+	status, b := req.RawBody()
+	if status != nil {
+		return status
+	}
+
+	err := json.Unmarshal(b, &req.Object)
+	if err != nil {
+		return http.Respond(400, err.Error())
+	}
 
 	return nil
 }
@@ -206,7 +211,15 @@ func (req *Request) ReadBodyObject() *http.Status {
 // ReadBodyArray unmarshals the body into a slice of interface{}.
 func (req *Request) ReadBodyArray() *http.Status {
 
-	err := json.Unmarshal(req.ctx.PostBody(), &req.Array); if err != nil { return http.Respond(400, err.Error()) }
+	status, b := req.RawBody()
+	if status != nil {
+		return status
+	}
+
+	err := json.Unmarshal(b, &req.Array)
+	if err != nil {
+		return http.Respond(400, err.Error())
+	}
 
 	return nil
 }

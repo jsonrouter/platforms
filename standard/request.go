@@ -8,7 +8,6 @@ import 	(
 	"github.com/hjmodha/goDevice"
 	"github.com/golangdaddy/go.uuid"
 	//
-	"github.com/jsonrouter/validation"
 	"github.com/jsonrouter/core/http"
 	"github.com/jsonrouter/core/tree"
 	"github.com/jsonrouter/logging"
@@ -35,8 +34,6 @@ func NewRequestObject(node *tree.Node, res www.ResponseWriter, r *www.Request) *
 		r: r,
 		method: r.Method,
 		params: node.RequestParams,
-		Object: validation.Object{},
-		Array: validation.Array{},
 	}
 }
 
@@ -186,10 +183,12 @@ func (req *Request) RawBody() (*http.Status, []byte) {
 	body := req.r.Body
 
 	b, err := ioutil.ReadAll(body)
-
-	if body != nil { body.Close() }
-
-	if err != nil { return http.Respond(400, err.Error()), nil }
+	if body != nil {
+		body.Close()
+	}
+	if err != nil {
+		return http.Respond(400, err.Error()), nil
+	}
 
 	return nil, b
 }
@@ -197,15 +196,15 @@ func (req *Request) RawBody() (*http.Status, []byte) {
 // ReadBodyObject unmarshals the body into a map of interface{}.
 func (req *Request) ReadBodyObject() *http.Status {
 
-	body := req.r.Body
+	status, b := req.RawBody()
+	if status != nil {
+		return status
+	}
 
-	b, err := ioutil.ReadAll(body)
-
-	if body != nil { body.Close() }
-
-	if err != nil { return http.Respond(400, err.Error()) }
-
-	err = json.Unmarshal(b, &req.Object); if err != nil { return http.Respond(400, err.Error()) }
+	err := json.Unmarshal(b, &req.Object)
+	if err != nil {
+		return http.Respond(400, err.Error())
+	}
 
 	return nil
 }
@@ -213,42 +212,37 @@ func (req *Request) ReadBodyObject() *http.Status {
 // ReadBodyArray unmarshals the body into a slice of interface{}.
 func (req *Request) ReadBodyArray() *http.Status {
 
-	body := req.r.Body
+	status, b := req.RawBody()
+	if status != nil {
+		return status
+	}
 
-	b, err := ioutil.ReadAll(body)
-
-	if body != nil { body.Close() }
-
-	if err != nil { return http.Respond(400, err.Error()) }
-
-	err = json.Unmarshal(b, &req.Array); if err != nil { return http.Respond(400, err.Error()) }
+	err := json.Unmarshal(b, &req.Array)
+	if err != nil {
+		return http.Respond(400, err.Error())
+	}
 
 	return nil
 }
 
 // Fail sends HTTP 500 status error.
 func (req *Request) Fail() *http.Status {
-
 	return http.Fail()
 }
 
 // Respond calls the respond method which creates the response payload.
 func (req *Request) Respond(args ...interface{}) *http.Status {
-
 	return http.Respond(args...)
 }
 
 // Redirect redirects the http to the destination URL.
 func (req *Request) Redirect(path string, code int) *http.Status {
-
 	www.Redirect(req.res, req.r, path, code)
-
 	return nil
 }
 
 // HttpError responds to the HTTP request with an error status.
 func (req *Request) HttpError(msg string, code int) {
-
 	www.Error(req.res, msg, code)
 	req.Log().NewError(msg)
 }
