@@ -1,5 +1,5 @@
 /*
-Package jsonrouter Examples
+Package platforms Examples
 
 Appengine:
 
@@ -23,4 +23,4 @@ Fasthttp:
 
 Standard:
 */
-package jsonrouter
+package platforms
