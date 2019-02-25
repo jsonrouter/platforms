@@ -31,9 +31,7 @@ Appengine:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
- 	
  	// Do something 
- 	
  	return nil
  }
 
@@ -71,9 +69,7 @@ Fasthttp:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
- 	
  	// Do something 
- 	
  	return nil
  }
 
@@ -124,9 +120,7 @@ Standard:
  }
  
  func (app *App) api_product_get(req http.Request) *http.Status {
- 	
  	// Do something 
- 	
  	return nil
  }
 
