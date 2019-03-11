@@ -7,6 +7,7 @@ import	(
 	"github.com/jsonrouter/platforms"
 	"github.com/jsonrouter/logging"
 	"github.com/jsonrouter/core"
+	"github.com/jsonrouter/core/metrics"
 	"github.com/jsonrouter/core/tree"
 	"github.com/jsonrouter/core/openapi"
 )
@@ -21,7 +22,7 @@ func New(log logging.Logger, spec interface{}) (*platforms.Router, error) {
 	config := &tree.Config{
 		Spec: spec,
 		Log: log,
-		Metrics: platforms.InitMetrics(),
+		Metrics: metrics.NewMetrics(),
 		MetResults: map[string]interface{}{},
 	}
 

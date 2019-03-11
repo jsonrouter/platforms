@@ -9,6 +9,7 @@ import	(
 	"github.com/jsonrouter/core"
 	"github.com/jsonrouter/core/tree"
 	"github.com/jsonrouter/platforms"
+	"github.com/jsonrouter/core/metrics"
 )
 
 type FastHttpRouter func (ctx *fasthttp.RequestCtx)
@@ -31,7 +32,7 @@ func New(logger logging.Logger, spec interface{}) (*tree.Node, FastHttpRouter) {
 	config := &tree.Config{
 		Spec: spec,
 		Log: logger,
-		Metrics: platforms.InitMetrics(),
+		Metrics: metrics.NewMetrics(),
 		MetResults: map[string]interface{}{},
 	}
 	root := tree.NewNode(config)

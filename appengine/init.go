@@ -6,14 +6,15 @@ import	(
 		"github.com/jsonrouter/core"
 		"github.com/jsonrouter/core/tree"
 		"github.com/jsonrouter/platforms"
-		)
+		"github.com/jsonrouter/core/metrics"
+)
 
 // Creates a JSONrouter for App Engine platforms
 func New(spec interface{}) (*platforms.Router, error) {
 
 	config := &tree.Config{
 		Spec: spec,
-		Metrics: platforms.InitMetrics(),
+		Metrics: metrics.NewMetrics(),
 		MetResults: map[string]interface{}{},
 	}
 	root := tree.NewNode(config)
