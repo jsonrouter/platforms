@@ -189,7 +189,10 @@ func (req *Request) RawBody() (*http.Status, []byte) {
 
 	b, err := ioutil.ReadAll(body)
 	if body != nil { body.Close() }
-	if err != nil { return http.Respond(400, err.Error()), nil }
+	if err != nil {
+		status, _ := http.Respond(400, err.Error())
+		return status, nil
+	}
 
 	return nil, b
 }
@@ -201,10 +204,16 @@ func (req *Request) ReadBodyObject() *http.Status {
 
 	b, err := ioutil.ReadAll(body)
 	if body != nil { body.Close() }
-	if err != nil { return http.Respond(400, err.Error()) }
+	if err != nil {
+		status, _ := http.Respond(400, err.Error())
+		return status
+	}
 
 	req.Object = map[string]interface{}{}
-	err = json.Unmarshal(b, &req.Object); if err != nil { return http.Respond(400, err.Error()) }
+	if err = json.Unmarshal(b, &req.Object); err != nil {
+		status, _ := http.Respond(400, err.Error())
+		return status
+	}
 
 	return nil
 }
@@ -216,10 +225,16 @@ func (req *Request) ReadBodyArray() *http.Status {
 
 	b, err := ioutil.ReadAll(body)
 	if body != nil { body.Close() }
-	if err != nil { return http.Respond(400, err.Error()) }
+	if err != nil {
+		status, _ := http.Respond(400, err.Error())
+		return status
+	}
 
 	req.Array = []interface{}{}
-	err = json.Unmarshal(b, &req.Array); if err != nil { return http.Respond(400, err.Error()) }
+	if err = json.Unmarshal(b, &req.Array); err != nil {
+		status, _ := http.Respond(400, err.Error())
+		return status
+	}
 
 	return nil
 }
@@ -232,8 +247,9 @@ func (req *Request) Fail() *http.Status {
 
 // Respond calls the respond method which creates the response payload.
 func (req *Request) Respond(args ...interface{}) *http.Status {
-
-	return http.Respond(args...)
+	status, contentType := http.Respond(args...)
+	req.SetResponseHeader("Content-Type", contentType)
+	return status
 }
 
 // Redirect redirects the http to the destination URL.

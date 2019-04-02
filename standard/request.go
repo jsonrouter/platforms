@@ -187,7 +187,8 @@ func (req *Request) RawBody() (*http.Status, []byte) {
 		body.Close()
 	}
 	if err != nil {
-		return http.Respond(400, err.Error()), nil
+		status, _ := http.Respond(400, err.Error())
+		return status, nil
 	}
 
 	return nil, b
@@ -203,7 +204,8 @@ func (req *Request) ReadBodyObject() *http.Status {
 
 	err := json.Unmarshal(b, &req.Object)
 	if err != nil {
-		return http.Respond(400, err.Error())
+		status, _ := http.Respond(400, err.Error())
+		return status
 	}
 
 	return nil
@@ -219,7 +221,8 @@ func (req *Request) ReadBodyArray() *http.Status {
 
 	err := json.Unmarshal(b, &req.Array)
 	if err != nil {
-		return http.Respond(400, err.Error())
+		status, _ := http.Respond(400, err.Error())
+		return status
 	}
 
 	return nil
@@ -232,7 +235,9 @@ func (req *Request) Fail() *http.Status {
 
 // Respond calls the respond method which creates the response payload.
 func (req *Request) Respond(args ...interface{}) *http.Status {
-	return http.Respond(args...)
+	status, contentType := http.Respond(args...)
+	req.SetResponseHeader("Content-Type", contentType)
+	return status
 }
 
 // Redirect redirects the http to the destination URL.
