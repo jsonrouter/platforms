@@ -2,6 +2,8 @@ package parameters
 
 import (
 	"sync"
+	//
+	"github.com/golangdaddy/go.uuid"
 )
 
 func New() *Parameters {
@@ -15,6 +17,17 @@ type Parameters struct {
 	params map[string]interface{}
 	bodyParams map[string]interface{}
 	sync.RWMutex
+}
+
+// UID returns the UUIDv4 which was randomply generated for this request.
+func (self *Parameters) UID() (string, error) {
+
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return "", err
+	}
+
+	return uid.String(), nil
 }
 
 // Param gets a variable that has been stored in the params object.

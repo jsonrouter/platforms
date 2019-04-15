@@ -8,6 +8,12 @@ import (
 
 func StandardTests_headers(t *testing.T, req http.Request) {
 
+	if req.GetRequestHeader("hello") != "" {
+		t.Error("REQUEST HEADER FAILED")
+		t.Fail()
+		return
+	}
+
 	req.SetRequestHeader("hello", "world")
 	if req.GetRequestHeader("hello") != "world" {
 		t.Error("REQUEST HEADER FAILED")

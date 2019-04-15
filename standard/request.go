@@ -6,7 +6,6 @@ import 	(
 	"io/ioutil"
 	"encoding/json"
 	"github.com/hjmodha/goDevice"
-	"github.com/golangdaddy/go.uuid"
 	//
 	"github.com/jsonrouter/core/http"
 	"github.com/jsonrouter/core/tree"
@@ -40,17 +39,6 @@ func NewRequestObject(node *tree.Node, res www.ResponseWriter, r *www.Request) *
 // Testing returns whether or not this is a test implementation.
 func (req *Request) Testing() bool {
 	return false
-}
-
-// UID returns the UUIDv4 which was randomply generated for this request.
-func (req *Request) UID() (string, error) {
-
-	uid, err := uuid.NewV4()
-	if err != nil {
-		return "", err
-	}
-
-	return uid.String(), nil
 }
 
 // Log returns the logging client.
