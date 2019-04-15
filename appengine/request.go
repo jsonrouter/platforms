@@ -142,23 +142,55 @@ func (req *Request) Body(k string) interface{} {
 
 // Param gets a variable that has been stored in the params object.
 // This could be an arguement from the request path, or have other vars stored there for random access.
-func (req *Request) Param(k string) interface{} { return req.params[k] }
+func (req *Request) Param(k string) interface{} {
+	req.RLock()
+	defer req.RUnlock()
+	return req.params[k]
+}
 // Params returns the params object.
 // This object is intended to be used for storing path parameters.
-func (req *Request) Params() map[string]interface{} { return req.params }
+func (req *Request) Params() map[string]interface{} {
+	req.RLock()
+	defer req.RUnlock()
+	return req.params
+}
 // SetParam sets a value from the params object.
-func (req *Request) SetParam(k string, v interface{}) { req.params[k] = v }
+func (req *Request) SetParam(k string, v interface{}) {
+	req.Lock()
+	defer req.Unlock()
+	req.params[k] = v
+}
 // SetParam replaces the params object with the supplied map.
-func (req *Request) SetParams(m map[string]interface{}) { req.params = m }
+func (req *Request) SetParams(m map[string]interface{}) {
+	req.Lock()
+	defer req.Unlock()
+	req.params = m
+}
 
 // BodyParam gets a variable that has been stored in the bodyparams object.
-func (req *Request) BodyParam(k string) interface{} { return req.bodyParams[k] }
+func (req *Request) BodyParam(k string) interface{} {
+	req.RLock()
+	defer req.RUnlock()
+	return req.bodyParams[k]
+}
 // BodyParam returns the bodyparams object.
-func (req *Request) BodyParams() map[string]interface{} { return req.bodyParams }
+func (req *Request) BodyParams() map[string]interface{} {
+	req.RLock()
+	defer req.RUnlock()
+	return req.bodyParams
+}
 // SetBodyParam sets a value from the params object.
-func (req *Request) SetBodyParam(k string, v interface{}) { req.bodyParams[k] = v }
+func (req *Request) SetBodyParam(k string, v interface{}) {
+	req.Lock()
+	defer req.Unlock()
+	req.bodyParams[k] = v
+}
 // SetBodyParams sets a value from the bodyparams object.
-func (req *Request) SetBodyParams(m map[string]interface{}) { req.bodyParams = m }
+func (req *Request) SetBodyParams(m map[string]interface{}) {
+	req.Lock()
+	defer req.Unlock()
+	req.bodyParams = m
+}
 
 // GetRequestHeader gets a request header value.
 func (req *Request) GetRequestHeader(k string) string {
