@@ -36,14 +36,6 @@ func NewRequestObject(node *tree.Node, res www.ResponseWriter, r *www.Request) *
 		params:			map[string]interface{}{},
 		bodyParams:		map[string]interface{}{},
 	}
-
-	node.RLock()
-	for k, v := range node.RequestParams {
-		req.params[k] = v
-	}
-	node.RUnlock()
-
-	return req
 }
 
 // Testing returns whether or not this is a test implementation.

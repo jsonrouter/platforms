@@ -31,7 +31,7 @@ type Request struct {
 // NewRequestObject constructs a new Request implementation for the fasthttp latform.
 func NewRequestObject(node *tree.Node, ctx *fasthttp.RequestCtx) *Request {
 
-	req := &Request{
+	return &Request{
 		ctx:			ctx,
 		config:			node.Config,
 		Node:			node,
@@ -39,14 +39,6 @@ func NewRequestObject(node *tree.Node, ctx *fasthttp.RequestCtx) *Request {
 		params:			map[string]interface{}{},
 		bodyParams:		map[string]interface{}{},
 	}
-
-	node.RLock()
-	for k, v := range node.RequestParams {
-		req.params[k] = v
-	}
-	node.RUnlock()
-
-	return req
 }
 
 // Testing returns whether or not this is a test implementation.
