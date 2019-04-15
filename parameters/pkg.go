@@ -6,6 +6,7 @@ import (
 	"github.com/golangdaddy/go.uuid"
 )
 
+// New returns a new Parameters object.
 func New() *Parameters {
 	return &Parameters{
 		params: map[string]interface{}{},
