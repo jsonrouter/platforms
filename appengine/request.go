@@ -34,15 +34,23 @@ type Request struct {
 // NewRequestObject constructs a new Request implementation for the App Engine platform.
 func NewRequestObject(node *tree.Node, res www.ResponseWriter, r *www.Request) *Request {
 
-	return &Request{
+	req := &Request{
 		config:			node.Config,
 		Node:			node,
 		res:		  	res,
 		r: 				r,
-		params:			node.RequestParams,
+		method: 		r.Method,
+		params:			map[string]interface{}{},
 		bodyParams:		map[string]interface{}{},
-		method:			r.Method,
 	}
+
+	node.RLock()
+	for k, v := range node.RequestParams {
+		req.params[k] = v
+	}
+	node.RUnlock()
+
+	return req
 }
 
 // Testing returns whether or not this is a test implementation.
